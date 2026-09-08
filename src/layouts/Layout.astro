@@ -1,0 +1,122 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  canonical?: string;
+}
+
+const HERO_IMAGE =
+  'https://imagedelivery.net/-sPAUAWeA405NiWJ0SNIQA/ff42759f-0014-4f32-6f0b-8d589f17c000/public';
+
+const {
+  title = 'ABQ Wax Lash Tan | Albuquerque Studio Concept',
+  description = 'Albuquerque wax, lash, and spray-tan studio concept. Hard wax for sensitive areas, professional lashes, and sun-safe glow — results that last in the high desert.',
+  ogImage = HERO_IMAGE,
+  canonical = 'https://abqwaxlashtan.com/',
+} = Astro.props;
+
+const siteName = 'ABQ Wax Lash Tan';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <link rel="canonical" href={canonical} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:locale" content="en_US" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={canonical} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#9a633c" />
+
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": siteName,
+      "url": "https://abqwaxlashtan.com",
+      "description": description,
+      "publisher": {
+        "@type": "Organization",
+        "name": siteName,
+        "url": "https://abqwaxlashtan.com"
+      }
+    })} />
+
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": title,
+      "description": description,
+      "url": canonical,
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": ogImage
+      },
+      "about": {
+        "@type": "Thing",
+        "name": "Wax, Lash and Tan Studio Albuquerque",
+        "description": "Professional Brazilian wax, lash, and spray-tan services designed for Albuquerque's high-desert climate."
+      },
+      "datePublished": "2026-09-08",
+      "dateModified": "2026-09-08",
+      "inLanguage": "en-US"
+    })} />
+
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What services does ABQ Wax Lash Tan cover?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The concept covers three complementary services: hard-wax epilation for lasting smoothness, professional lash enhancements, and spray tan for a sun-safe glow."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How long does waxing last?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Wax epilation extracts hair from the root and typically provides smooth skin for 3 to 4 weeks. With consistent sessions, regrowth often becomes finer."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why is this combination useful in Albuquerque?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "High-desert heat, altitude, and year-round outdoor living reward services that last. Hard wax, lashes, and spray tan all reduce daily maintenance while staying kind to skin in a dry climate."
+          }
+        }
+      ]
+    })} />
+  </head>
+  <body class="min-h-screen flex flex-col">
+    <slot />
+  </body>
+</html>
