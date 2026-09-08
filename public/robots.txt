@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://abqwaxlashtan.com/sitemap-index.xml

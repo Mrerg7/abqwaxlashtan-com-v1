@@ -1,0 +1,6 @@
+# Cloudflare Workers Static Assets — pure static, assets-only
+name = "abqwaxlashtan-com-v1"
+compatibility_date = "2025-07-01"
+
+[assets]
+directory = "./dist"
