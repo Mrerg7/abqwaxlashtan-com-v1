@@ -35,6 +35,7 @@ export default {
         sans: ['Inter', 'system-ui', 'sans-serif'],
         display: ['Playfair Display', 'Georgia', 'serif'],
       },
+      letterSpacing: { widestx: '0.2em' },
     },
   },
   plugins: [

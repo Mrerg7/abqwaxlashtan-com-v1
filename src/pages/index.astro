@@ -1,196 +1,420 @@
 ---
+import { getCollection, type CollectionEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import Acquisition from '../components/Acquisition.astro';
+import { SITE, ACQUISITION_MAILTO } from '../config/site';
+
+type Insight = CollectionEntry<'insights'>;
+
+const HLS_SRC = `https://${SITE.streamHost}/${SITE.streamId}/manifest/video.m3u8`;
+const POSTER = `https://${SITE.streamHost}/${SITE.streamId}/thumbnails/thumbnail.jpg?time=&height=600`;
+
+const faqs = [
+  {
+    q: `Is ${SITE.domain} for sale?`,
+    a: `Yes. ${SITE.domain} is a premium domain name available for acquisition from the owner. Serious buyers can email ${SITE.email}. We respond personally within 1–2 business days.`,
+  },
+  {
+    q: 'What is the asking price?',
+    a: `The listed acquisition price is ${SITE.priceDisplay} USD, one-time, with full ownership and a clean title. Email us if you would like to discuss terms.`,
+  },
+  {
+    q: 'How do I buy this domain?',
+    a: `Email ${SITE.email} with your offer and timeline. Every transaction is completed through Escrow.com so funds and domain transfer are both protected.`,
+  },
+  {
+    q: 'What does ABQWaxLashTan mean?',
+    a: 'ABQ is the shorthand people in Albuquerque already use for the city. Wax, lash, and tan are the three services a studio in this category sells. The hostname is city plus category — nothing to explain.',
+  },
+  {
+    q: 'What is the domain designed for?',
+    a: 'ABQWaxLashTan.com is built for a boutique studio, a multi-location operator, a franchise, or a beauty educator targeting the New Mexico market. The three-service brand is already written into the name.',
+  },
+  {
+    q: 'Is the domain transfer safe?',
+    a: 'Yes. Acquisitions are escrow-protected via Escrow.com. The domain has a clean title and transfers to your registrar account, typically within 0–5 business days after cleared payment.',
+  },
+];
+
+const faqSchema: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((item) => ({
+    '@type': 'Question',
+    name: item.q,
+    acceptedAnswer: { '@type': 'Answer', text: item.a },
+  })),
+};
+
+const posts = (await getCollection('insights', (entry: Insight): entry is Insight => !entry.data.draft))
+  .sort((a: Insight, b: Insight) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
 ---
 
-<Layout>
+<Layout schemas={[faqSchema]}>
   <Header />
 
-  <main class="flex-1">
-    <section class="relative overflow-hidden">
-      <div class="absolute inset-0 bg-gradient-to-br from-brand-50 via-brand-50 to-brand-100/70"></div>
-      <div class="container-narrow relative section-padding">
-        <div class="grid items-center gap-10 lg:grid-cols-2">
-          <div>
-            <div class="mb-6 inline-flex items-center gap-2 rounded-full border border-brand-200 bg-white/80 px-4 py-1.5 text-xs font-medium text-brand-700 shadow-sm backdrop-blur">
-              <span class="h-1.5 w-1.5 rounded-full bg-brand-500"></span>
-              Albuquerque · Wax · Lash · Tan
-            </div>
-            <h1 class="font-display text-4xl font-semibold tracking-tight text-accent-900 sm:text-5xl lg:text-[3.4rem]">
-              ABQ <span class="text-brand-600">Wax Lash Tan</span>
-            </h1>
-            <p class="mt-6 text-lg leading-relaxed text-accent-600">
-              A high-desert studio concept combining hard-wax smoothness, professional lashes, and sun-safe glow —
-              services designed for Albuquerque living.
+  <main id="main-content" class="flex-1">
+    <section class="relative bg-accent-950" aria-label="Hero">
+      <div class="stream-hero relative isolate w-full overflow-hidden">
+        <div
+          class="absolute inset-0 bg-accent-950 bg-cover bg-center"
+          style={`background-image: url('${POSTER}')`}
+          aria-hidden="true"
+        ></div>
+        <video
+          id="hero-stream"
+          class="absolute inset-0 h-full w-full object-cover"
+          poster={POSTER}
+          muted
+          loop
+          playsinline
+          autoplay
+          preload="auto"
+          aria-label="ABQ Wax Lash Tan studio tour"
+        ></video>
+        <div
+          class="pointer-events-none absolute inset-0 bg-gradient-to-t from-accent-950 via-accent-950/45 to-accent-950/20 sm:via-accent-950/55 sm:to-accent-950/15"
+          aria-hidden="true"
+        ></div>
+        <div class="absolute inset-0 flex items-end">
+          <div class="container-narrow w-full pb-24 pt-20 sm:pb-12 sm:pt-20">
+            <p class="mb-2 text-[10px] font-semibold uppercase tracking-widestx text-brand-300 sm:mb-3 sm:text-xs">
+              Albuquerque domain for sale · Wax · Lash · Tan
             </p>
-            <div class="mt-10 flex flex-col gap-4 sm:flex-row">
-              <a href="#services" class="btn-primary">Explore Services</a>
-              <a href="#acquisition" class="btn-secondary">Domain Available</a>
+            <h1 class="font-display text-5xl font-semibold leading-none text-white sm:text-6xl lg:text-7xl">
+              ABQ <span class="text-brand-300">Wax Lash Tan</span>
+            </h1>
+            <p class="mt-3 max-w-xl text-sm leading-relaxed text-accent-100/90 sm:mt-5 sm:text-lg">
+              The exact-match .com for Albuquerque waxing, lashes, and spray tan — city, three services, and
+              category in one hostname. Offered at {SITE.priceDisplay}.
+            </p>
+            <div class="mt-5 flex flex-col gap-2 sm:mt-8 sm:flex-row sm:gap-3">
+              <a href="#acquisition" class="btn-accent pointer-events-auto">Inquire — {SITE.priceDisplay}</a>
+              <a href="#value" class="btn-secondary pointer-events-auto border-white/30 bg-white/10 text-white backdrop-blur hover:bg-white/20 hover:text-white">Why it is valuable</a>
             </div>
           </div>
-
-          <figure class="relative">
-            <div class="overflow-hidden rounded-3xl border border-brand-100 shadow-xl shadow-brand-200/40">
-              <div style="position: relative; padding-top: 54.32098765432099%;">
-                <iframe
-                  src="https://customer-wa9cpywo3l4jte5c.cloudflarestream.com/3bc3a954bc605a544462d01af9cb8bdf/iframe?loop=true&autoplay=true&poster=https%3A%2F%2Fcustomer-wa9cpywo3l4jte5c.cloudflarestream.com%2F3bc3a954bc605a544462d01af9cb8bdf%2Fthumbnails%2Fthumbnail.jpg%3Ftime%3D%26height%3D600&controls=false"
-                  loading="lazy"
-                  title="ABQ Wax Lash Tan studio tour"
-                  style="border: none; position: absolute; top: 0; left: 0; height: 100%; width: 100%;"
-                  allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
-                  allowfullscreen
-                ></iframe>
-              </div>
-            </div>
-            <figcaption class="mt-3 text-center text-xs text-accent-500">
-              Studio concept · Albuquerque, New Mexico
-            </figcaption>
-          </figure>
         </div>
       </div>
     </section>
+
+    <script is:inline define:vars={{ HLS_SRC }}>
+      (function () {
+        const video = document.getElementById('hero-stream');
+        if (!(video instanceof HTMLVideoElement)) return;
+
+        const tryPlay = () => {
+          video.muted = true;
+          video.play().catch(() => {});
+        };
+
+        if (video.canPlayType('application/vnd.apple.mpegurl')) {
+          video.src = HLS_SRC;
+          video.addEventListener('loadeddata', tryPlay, { once: true });
+          tryPlay();
+          return;
+        }
+
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js';
+        script.async = true;
+        script.onload = () => {
+          if (!window.Hls || !window.Hls.isSupported()) return;
+          const hls = new window.Hls({ enableWorker: true, maxBufferLength: 10 });
+          hls.loadSource(HLS_SRC);
+          hls.attachMedia(video);
+          hls.on(window.Hls.Events.MANIFEST_PARSED, tryPlay);
+        };
+        document.head.appendChild(script);
+      })();
+    </script>
 
     <section id="services" class="section-padding bg-white">
       <div class="container-narrow">
         <div class="mx-auto max-w-2xl text-center">
-          <h2 class="font-display text-3xl font-semibold tracking-tight text-accent-900 sm:text-4xl">
-            Three Services. One Brand.
+          <p class="text-[11px] font-semibold uppercase tracking-widestx text-brand-600">The services</p>
+          <h2 class="mt-3 font-display text-3xl font-semibold tracking-tight text-accent-900 sm:text-4xl">
+            Three services. One brand.
           </h2>
           <p class="mt-4 text-lg text-accent-600">
-            Complementary treatments that reduce daily maintenance and hold up in a dry, high-altitude climate.
+            Waxing, lashes, and spray tan are the three revenue lines a high-desert beauty studio runs on —
+            and all three are already inside the domain.
           </p>
         </div>
 
-        <div class="mt-14 grid gap-6 md:grid-cols-3">
+        <div class="mt-12 grid gap-6 md:grid-cols-3">
           <article class="card">
-            <p class="text-xs font-semibold uppercase tracking-widest text-brand-600">Wax</p>
+            <p class="text-xs font-semibold uppercase tracking-widestx text-brand-600">Wax</p>
             <h3 class="mt-2 text-xl font-semibold text-accent-900">Hard-wax smoothness</h3>
             <p class="mt-3 text-sm leading-relaxed text-accent-600">
-              Wax epilation extracts hair from the root using warm or hard wax, providing smooth skin for 3 to 4 weeks.
-              Hard wax is ideal for the bikini line and underarms because it adheres to hair, not skin.
+              Wax epilation extracts hair from the root using warm or hard wax, providing smooth skin for 3 to 4
+              weeks. Hard wax adheres to hair, not skin, which makes it the standard for the bikini line and
+              underarms — the queries that drive most local waxing searches.
             </p>
           </article>
 
           <article class="card">
-            <p class="text-xs font-semibold uppercase tracking-widest text-brand-600">Lash</p>
+            <p class="text-xs font-semibold uppercase tracking-widestx text-brand-600">Lash</p>
             <h3 class="mt-2 text-xl font-semibold text-accent-900">Defined, low-maintenance lashes</h3>
             <p class="mt-3 text-sm leading-relaxed text-accent-600">
-              Professional lash work adds shape and definition without daily mascara. A natural fit beside waxing —
-              both are appointment-based services that last through busy weeks.
+              Professional lash extensions and lifts add shape and definition without daily mascara. Lashes and
+              waxing share the same booking calendar, the same client, and the same search intent — which is why
+              one brand covering both converts better than two competing names.
             </p>
           </article>
 
           <article class="card">
-            <p class="text-xs font-semibold uppercase tracking-widest text-brand-600">Tan</p>
+            <p class="text-xs font-semibold uppercase tracking-widestx text-brand-600">Tan</p>
             <h3 class="mt-2 text-xl font-semibold text-accent-900">Sun-safe desert glow</h3>
             <p class="mt-3 text-sm leading-relaxed text-accent-600">
-              Spray tan delivers color without UV exposure. In Albuquerque’s intense sun, a controlled tan is the safer
-              way to look sun-kissed between outdoor days.
+              Spray tan delivers color without UV exposure. In Albuquerque's intense sun, a controlled tan is the
+              safer way to look sun-kissed between outdoor days — a third service line under one hostname instead
+              of a separate brand.
             </p>
           </article>
         </div>
       </div>
     </section>
 
-    <section id="studio" class="section-padding bg-brand-50">
-      <div class="container-narrow">
-        <div class="grid items-center gap-12 lg:grid-cols-2">
-          <div>
-            <h2 class="font-display text-3xl font-semibold tracking-tight text-accent-900 sm:text-4xl">
-              Built for the high desert
-            </h2>
-            <p class="mt-4 text-lg text-accent-600">
-              Albuquerque clients live with dry air, strong sun, and an active outdoor calendar. The studio concept is
-              designed around that reality.
-            </p>
-            <ul class="mt-8 space-y-4">
-              <li class="flex gap-3 text-accent-700">
-                <span class="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-700">
-                  <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                  </svg>
-                </span>
-                <span><strong class="font-medium text-accent-900">3–4 weeks of smoothness</strong> from root-extraction waxing.</span>
-              </li>
-              <li class="flex gap-3 text-accent-700">
-                <span class="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-700">
-                  <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                  </svg>
-                </span>
-                <span><strong class="font-medium text-accent-900">Hard wax for sensitive areas</strong> — less skin pull, cleaner release.</span>
-              </li>
-              <li class="flex gap-3 text-accent-700">
-                <span class="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-700">
-                  <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                  </svg>
-                </span>
-                <span><strong class="font-medium text-accent-900">Lash + tan pairing</strong> for events, travel, and summer months.</span>
-              </li>
-              <li class="flex gap-3 text-accent-700">
-                <span class="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-700">
-                  <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                  </svg>
-                </span>
-                <span><strong class="font-medium text-accent-900">Adobe-inspired brand</strong> that reads local the moment a guest walks in.</span>
-              </li>
-            </ul>
-          </div>
+    <section id="place" class="section-padding bg-brand-50">
+      <div class="container-narrow grid gap-10 lg:grid-cols-2 lg:items-start">
+        <div>
+          <p class="text-[11px] font-semibold uppercase tracking-widestx text-brand-600">The market</p>
+          <h2 class="mt-3 font-display text-3xl font-semibold tracking-tight text-accent-900 sm:text-4xl">
+            Built for the high desert
+          </h2>
+          <p class="mt-4 text-base leading-relaxed text-accent-600 sm:text-lg">
+            Albuquerque clients live with dry air, strong sun, and an active outdoor calendar. The services that
+            work here are the ones that last — and the name that works here is the one that says the city and
+            the category at the same time.
+          </p>
+          <ul class="mt-8 space-y-4 text-sm text-accent-700 sm:text-base">
+            <li class="flex gap-3">
+              <span class="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-700">
+                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+              </span>
+              <span><strong class="font-medium text-accent-900">ABQ is the local shorthand</strong> — airport, weather, and everyday conversation all use it.</span>
+            </li>
+            <li class="flex gap-3">
+              <span class="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-700">
+                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+              </span>
+              <span><strong class="font-medium text-accent-900">3–4 weeks of smoothness</strong> from root-extraction waxing keeps clients on a recurring schedule.</span>
+            </li>
+            <li class="flex gap-3">
+              <span class="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-700">
+                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+              </span>
+              <span><strong class="font-medium text-accent-900">Year-round outdoor living</strong> means lash and tan demand does not disappear with the seasons.</span>
+            </li>
+            <li class="flex gap-3">
+              <span class="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-700">
+                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+              </span>
+              <span><strong class="font-medium text-accent-900">One search, one brand</strong> — “Albuquerque wax,” “lashes ABQ,” and “spray tan ABQ” all land on the same name.</span>
+            </li>
+          </ul>
+        </div>
 
-          <div class="rounded-3xl border border-brand-100 bg-white p-8 shadow-lg shadow-brand-100/50">
-            <div class="space-y-6">
-              <div class="flex items-baseline justify-between border-b border-brand-100 pb-4">
-                <span class="text-sm font-medium text-accent-500">Wax duration</span>
-                <span class="font-display text-2xl font-semibold text-brand-700">3–4 weeks</span>
-              </div>
-              <div class="flex items-baseline justify-between border-b border-brand-100 pb-4">
-                <span class="text-sm font-medium text-accent-500">Ideal hair length</span>
-                <span class="font-display text-2xl font-semibold text-brand-700">¼–½ in</span>
-              </div>
-              <div class="flex items-baseline justify-between border-b border-brand-100 pb-4">
-                <span class="text-sm font-medium text-accent-500">Preferred wax</span>
-                <span class="font-display text-2xl font-semibold text-brand-700">Hard wax</span>
-              </div>
-              <div class="flex items-baseline justify-between">
-                <span class="text-sm font-medium text-accent-500">Market</span>
-                <span class="font-display text-2xl font-semibold text-brand-700">Albuquerque</span>
-              </div>
+        <div class="rounded-3xl border border-brand-100 bg-white p-8 shadow-lg shadow-brand-100/50">
+          <dl class="space-y-5">
+            <div class="flex items-baseline justify-between gap-4 border-b border-brand-100 pb-4">
+              <dt class="text-sm text-accent-500">Reads as</dt>
+              <dd class="font-display text-xl font-semibold text-accent-900 sm:text-2xl">Albuquerque wax + lash + tan</dd>
+            </div>
+            <div class="flex items-baseline justify-between gap-4 border-b border-brand-100 pb-4">
+              <dt class="text-sm text-accent-500">Market</dt>
+              <dd class="font-display text-xl font-semibold text-accent-900 sm:text-2xl">Albuquerque, NM</dd>
+            </div>
+            <div class="flex items-baseline justify-between gap-4 border-b border-brand-100 pb-4">
+              <dt class="text-sm text-accent-500">Wax duration</dt>
+              <dd class="font-display text-xl font-semibold text-accent-900 sm:text-2xl">3–4 weeks</dd>
+            </div>
+            <div class="flex items-baseline justify-between gap-4">
+              <dt class="text-sm text-accent-500">Offer</dt>
+              <dd class="font-display text-xl font-semibold text-brand-700 sm:text-2xl">{SITE.priceDisplay}</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <section id="value" class="section-padding bg-white">
+      <div class="container-narrow">
+        <div class="mx-auto max-w-2xl text-center">
+          <p class="text-[11px] font-semibold uppercase tracking-widestx text-brand-600">The value</p>
+          <h2 class="mt-3 font-display text-3xl font-semibold tracking-tight text-accent-900 sm:text-4xl">
+            Why this name works
+          </h2>
+          <p class="mt-4 text-base leading-relaxed text-accent-600 sm:text-lg">
+            City, category, and offer inside one memorable .com — the domain does the explaining before the
+            first line of copy loads.
+          </p>
+        </div>
+
+        <div class="mt-12 grid gap-4 sm:gap-6 md:grid-cols-2">
+          <article class="card">
+            <h3 class="font-display text-xl font-semibold text-accent-900">Exact match, three ways</h3>
+            <p class="mt-3 text-sm leading-relaxed text-accent-600">
+              Searchers type <em>Albuquerque waxing</em>, <em>ABQ lashes</em>, and <em>spray tan ABQ</em>. The
+              hostname contains the city code and all three service words — title, H1, and URL point at the same
+              local queries.
+            </p>
+          </article>
+          <article class="card">
+            <h3 class="font-display text-xl font-semibold text-accent-900">A brand, not a slogan</h3>
+            <p class="mt-3 text-sm leading-relaxed text-accent-600">
+              Three service lines are already named in the domain, so a buyer does not have to invent a brand
+              around the offer. The positioning — boutique studio, multi-location operator, or educator — is the
+              only decision left.
+            </p>
+          </article>
+          <article class="card">
+            <h3 class="font-display text-xl font-semibold text-accent-900">Short enough to print</h3>
+            <p class="mt-3 text-sm leading-relaxed text-accent-600">
+              Seventeen characters fit on a van wrap, a window decal, and a maps listing. Word-of-mouth spelling
+              is unambiguous because every word in it is a word people already say.
+            </p>
+          </article>
+          <article class="card">
+            <h3 class="font-display text-xl font-semibold text-accent-900">.com, clean title</h3>
+            <p class="mt-3 text-sm leading-relaxed text-accent-600">
+              The category default is .com, and this one is uncluttered: no hyphens, no invented spellings, no
+              second-level noise. Transfers through Escrow.com with a clean title.
+            </p>
+          </article>
+        </div>
+
+        <div class="mt-10 rounded-2xl bg-accent-950 p-6 text-center sm:p-10">
+          <p class="text-[11px] font-semibold uppercase tracking-widestx text-brand-400">Asking price</p>
+          <p class="mt-3 font-display text-5xl font-semibold text-brand-300 sm:text-6xl">{SITE.priceDisplay}</p>
+          <p class="mt-3 text-sm text-accent-200">A one-time acquisition for the Albuquerque wax, lash, and tan name.</p>
+          <a href="#acquisition" class="btn-accent mt-6 sm:w-auto">Request terms</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="use" class="section-padding bg-brand-50">
+      <div class="container-narrow grid gap-10 lg:grid-cols-2 lg:items-start">
+        <div>
+          <p class="text-[11px] font-semibold uppercase tracking-widestx text-brand-600">The use</p>
+          <h2 class="mt-3 font-display text-3xl font-semibold tracking-tight text-accent-900 sm:text-4xl">
+            Who this name is for
+          </h2>
+          <p class="mt-4 text-sm leading-relaxed text-accent-700 sm:text-base">
+            Operators who need the city and the category in the URL — not an invented brand that has to be
+            taught before it can sell.
+          </p>
+          <ul class="mt-8 space-y-4 text-sm text-accent-700 sm:text-base">
+            <li class="flex gap-3"><span class="mt-2 h-2 w-2 shrink-0 rounded-full bg-brand-500"></span><span><strong class="text-accent-900">Boutique studios</strong> — a single location that wants maps and search intent from day one.</span></li>
+            <li class="flex gap-3"><span class="mt-2 h-2 w-2 shrink-0 rounded-full bg-brand-500"></span><span><strong class="text-accent-900">Multi-location operators</strong> — one hostname that covers every service chair across the metro.</span></li>
+            <li class="flex gap-3"><span class="mt-2 h-2 w-2 shrink-0 rounded-full bg-brand-500"></span><span><strong class="text-accent-900">Educators &amp; trainers</strong> — a brand that reads as curriculum for the New Mexico market.</span></li>
+            <li class="flex gap-3"><span class="mt-2 h-2 w-2 shrink-0 rounded-full bg-brand-500"></span><span><strong class="text-accent-900">Franchise &amp; marketplace</strong> — a category name that scales past one chair and one zip code.</span></li>
+          </ul>
+        </div>
+
+        <div class="rounded-2xl border border-brand-200 bg-white p-6 sm:p-8">
+          <p class="text-[11px] font-semibold uppercase tracking-widestx text-brand-600">Domain at a glance</p>
+          <dl class="mt-5 space-y-5">
+            <div class="flex items-baseline justify-between gap-4 border-b border-brand-100 pb-4">
+              <dt class="text-sm text-accent-500">Length</dt>
+              <dd class="font-display text-xl font-semibold text-accent-900 sm:text-2xl">17 characters</dd>
+            </div>
+            <div class="flex items-baseline justify-between gap-4 border-b border-brand-100 pb-4">
+              <dt class="text-sm text-accent-500">Extension</dt>
+              <dd class="font-display text-xl font-semibold text-accent-900 sm:text-2xl">.com</dd>
+            </div>
+            <div class="flex items-baseline justify-between gap-4 border-b border-brand-100 pb-4">
+              <dt class="text-sm text-accent-500">Service words</dt>
+              <dd class="font-display text-xl font-semibold text-accent-900 sm:text-2xl">Wax · Lash · Tan</dd>
+            </div>
+            <div class="flex items-baseline justify-between gap-4">
+              <dt class="text-sm text-accent-500">City code</dt>
+              <dd class="font-display text-xl font-semibold text-accent-900 sm:text-2xl">ABQ</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" class="section-padding bg-white">
+      <div class="container-narrow">
+        <div class="mx-auto max-w-2xl text-center">
+          <p class="text-[11px] font-semibold uppercase tracking-widestx text-brand-600">FAQ</p>
+          <h2 class="mt-3 font-display text-3xl font-semibold tracking-tight text-accent-900 sm:text-4xl">
+            Questions buyers ask
+          </h2>
+          <p class="mt-4 text-base leading-relaxed text-accent-600 sm:text-lg">
+            Everything about the offer, the transfer, and the name. Something missing?
+            <a
+              href={ACQUISITION_MAILTO('Domain Inquiry: ABQWaxLashTan.com')}
+              class="font-medium text-accent-900 underline decoration-brand-500 underline-offset-4"
+            >
+              Ask us directly
+            </a>.
+          </p>
+        </div>
+
+        <div class="mx-auto mt-12 max-w-3xl space-y-4">
+          {
+            faqs.map((item) => (
+              <details class="card group">
+                <summary class="flex cursor-pointer list-none items-start justify-between gap-4 font-display text-xl font-semibold text-accent-900 sm:text-2xl">
+                  <span>{item.q}</span>
+                  <svg
+                    class="mt-1 h-5 w-5 shrink-0 text-brand-600 transition-transform group-open:rotate-45"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    aria-hidden="true"
+                  >
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                  </svg>
+                </summary>
+                <p class="mt-3 text-sm leading-relaxed text-accent-600 sm:text-base">{item.a}</p>
+              </details>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    {
+      posts.length > 0 && (
+        <section class="section-padding bg-brand-50">
+          <div class="container-narrow">
+            <div class="mx-auto max-w-2xl text-center">
+              <p class="text-[11px] font-semibold uppercase tracking-widestx text-brand-600">Insights</p>
+              <h2 class="mt-3 font-display text-3xl font-semibold tracking-tight text-accent-900 sm:text-4xl">
+                More on Albuquerque &amp; the name
+              </h2>
+            </div>
+            <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {posts.map((post) => (
+                <a href={`/insights/${post.slug}/`} class="card group flex flex-col transition hover:-translate-y-1">
+                  <p class="text-[11px] font-medium uppercase tracking-widestx text-brand-600">
+                    {post.data.pubDate.toISOString().split('T')[0]}
+                  </p>
+                  <h3 class="mt-3 font-display text-xl font-semibold text-accent-900 group-hover:text-brand-700">
+                    {post.data.title}
+                  </h3>
+                  <p class="mt-3 text-sm leading-relaxed text-accent-600">{post.data.description}</p>
+                  <span class="mt-4 text-sm font-medium text-accent-900">Read more →</span>
+                </a>
+              ))}
+            </div>
+            <div class="mt-8 text-center">
+              <a href="/insights/" class="btn-outline sm:w-auto">All insights</a>
             </div>
           </div>
-        </div>
-      </div>
-    </section>
+        </section>
+      )
+    }
 
-    <section id="why" class="section-padding bg-white">
-      <div class="container-narrow max-w-3xl">
-        <h2 class="font-display text-3xl font-semibold tracking-tight text-accent-900 sm:text-4xl">
-          Why this name works
-        </h2>
-        <div class="mt-6 space-y-4 text-accent-700 leading-relaxed">
-          <p>
-            <strong class="text-accent-900">ABQWaxLashTan.com</strong> packs city, category, and offer into a single
-            memorable domain. Searchers looking for waxing, lashes, or spray tan in Albuquerque can land on one brand
-            instead of three competing names.
-          </p>
-          <p>
-            The domain is positioned for a boutique studio, a multi-location operator, or a beauty educator targeting
-            the New Mexico market. It is available for acquisition.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <section class="border-t border-brand-100 bg-brand-50/50 py-12">
-      <div class="container-narrow text-center">
-        <p class="mx-auto max-w-2xl text-sm text-accent-500">
-          Information presented reflects widely accepted professional understanding of wax, lash, and spray-tan services
-          and is intended solely for educational and demonstration purposes.
-        </p>
-      </div>
-    </section>
+    <Acquisition />
   </main>
 
   <Footer />
