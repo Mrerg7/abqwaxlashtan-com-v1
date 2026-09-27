@@ -36,6 +36,14 @@ const faqs = [
     q: 'Is the domain transfer safe?',
     a: 'Yes. Acquisitions are escrow-protected via Escrow.com. The domain has a clean title and transfers to your registrar account, typically within 0–5 business days after cleared payment.',
   },
+  {
+    q: 'Will this help with Albuquerque SEO?',
+    a: 'Exact-match geo domains align the URL, title, and local queries people already type — Albuquerque waxing, ABQ lashes, spray tan ABQ. Rankings still depend on content, links, and Core Web Vitals, but the hostname removes brand education from the funnel.',
+  },
+  {
+    q: 'Can I make an offer below $43,000?',
+    a: `Yes. Email ${SITE.email} with your best offer and intended use. Serious, escrow-ready buyers get a personal reply within 1–2 business days.`,
+  },
 ];
 
 const faqSchema: Record<string, unknown> = {
@@ -72,7 +80,7 @@ const posts = (await getCollection('insights', (entry: Insight): entry is Insigh
           loop
           playsinline
           autoplay
-          preload="auto"
+          preload="metadata"
           aria-label="ABQ Wax Lash Tan studio tour"
         ></video>
         <div
@@ -80,14 +88,15 @@ const posts = (await getCollection('insights', (entry: Insight): entry is Insigh
           aria-hidden="true"
         ></div>
         <div class="absolute inset-0 flex items-end">
-          <div class="container-narrow w-full pb-24 pt-20 sm:pb-12 sm:pt-20">
-            <p class="mb-2 text-[10px] font-semibold uppercase tracking-widestx text-brand-300 sm:mb-3 sm:text-xs">
+          <div class="container-narrow w-full pb-28 pt-20 sm:pb-12 sm:pt-20">
+            <p class="eyebrow mb-2 text-brand-300 sm:mb-3">
               Albuquerque domain for sale · Wax · Lash · Tan
             </p>
-            <h1 class="font-display text-5xl font-semibold leading-none text-white sm:text-6xl lg:text-7xl">
-              ABQ <span class="text-brand-300">Wax Lash Tan</span>
+            <h1 class="font-display text-4xl font-semibold leading-[0.95] text-white sm:text-6xl lg:text-7xl">
+              <span class="block">{SITE.domain}</span>
+              <span class="mt-2 block text-3xl text-brand-300 sm:mt-3 sm:text-5xl lg:text-6xl">Wax · Lash · Tan</span>
             </h1>
-            <p class="mt-3 max-w-xl text-sm leading-relaxed text-accent-100/90 sm:mt-5 sm:text-lg">
+            <p class="mt-3 max-w-xl text-base leading-relaxed text-accent-100/90 sm:mt-5 sm:text-lg">
               The exact-match .com for Albuquerque waxing, lashes, and spray tan — city, three services, and
               category in one hostname. Offered at {SITE.priceDisplay}.
             </p>
@@ -104,6 +113,13 @@ const posts = (await getCollection('insights', (entry: Insight): entry is Insigh
       (function () {
         const video = document.getElementById('hero-stream');
         if (!(video instanceof HTMLVideoElement)) return;
+
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (reduceMotion) {
+          video.removeAttribute('autoplay');
+          video.pause();
+          return;
+        }
 
         const tryPlay = () => {
           video.muted = true;
@@ -134,7 +150,7 @@ const posts = (await getCollection('insights', (entry: Insight): entry is Insigh
     <section id="services" class="section-padding bg-white">
       <div class="container-narrow">
         <div class="mx-auto max-w-2xl text-center">
-          <p class="text-[11px] font-semibold uppercase tracking-widestx text-brand-600">The services</p>
+          <p class="eyebrow text-brand-600">The services</p>
           <h2 class="mt-3 font-display text-3xl font-semibold tracking-tight text-accent-900 sm:text-4xl">
             Three services. One brand.
           </h2>
@@ -181,7 +197,7 @@ const posts = (await getCollection('insights', (entry: Insight): entry is Insigh
     <section id="place" class="section-padding bg-brand-50">
       <div class="container-narrow grid gap-10 lg:grid-cols-2 lg:items-start">
         <div>
-          <p class="text-[11px] font-semibold uppercase tracking-widestx text-brand-600">The market</p>
+          <p class="eyebrow text-brand-600">The market</p>
           <h2 class="mt-3 font-display text-3xl font-semibold tracking-tight text-accent-900 sm:text-4xl">
             Built for the high desert
           </h2>
@@ -244,7 +260,7 @@ const posts = (await getCollection('insights', (entry: Insight): entry is Insigh
     <section id="value" class="section-padding bg-white">
       <div class="container-narrow">
         <div class="mx-auto max-w-2xl text-center">
-          <p class="text-[11px] font-semibold uppercase tracking-widestx text-brand-600">The value</p>
+          <p class="eyebrow text-brand-600">The value</p>
           <h2 class="mt-3 font-display text-3xl font-semibold tracking-tight text-accent-900 sm:text-4xl">
             Why this name works
           </h2>
@@ -288,7 +304,7 @@ const posts = (await getCollection('insights', (entry: Insight): entry is Insigh
         </div>
 
         <div class="mt-10 rounded-2xl bg-accent-950 p-6 text-center sm:p-10">
-          <p class="text-[11px] font-semibold uppercase tracking-widestx text-brand-400">Asking price</p>
+          <p class="eyebrow text-brand-400">Asking price</p>
           <p class="mt-3 font-display text-5xl font-semibold text-brand-300 sm:text-6xl">{SITE.priceDisplay}</p>
           <p class="mt-3 text-sm text-accent-200">A one-time acquisition for the Albuquerque wax, lash, and tan name.</p>
           <a href="#acquisition" class="btn-accent mt-6 sm:w-auto">Request terms</a>
@@ -299,7 +315,7 @@ const posts = (await getCollection('insights', (entry: Insight): entry is Insigh
     <section id="use" class="section-padding bg-brand-50">
       <div class="container-narrow grid gap-10 lg:grid-cols-2 lg:items-start">
         <div>
-          <p class="text-[11px] font-semibold uppercase tracking-widestx text-brand-600">The use</p>
+          <p class="eyebrow text-brand-600">The use</p>
           <h2 class="mt-3 font-display text-3xl font-semibold tracking-tight text-accent-900 sm:text-4xl">
             Who this name is for
           </h2>
@@ -316,7 +332,7 @@ const posts = (await getCollection('insights', (entry: Insight): entry is Insigh
         </div>
 
         <div class="rounded-2xl border border-brand-200 bg-white p-6 sm:p-8">
-          <p class="text-[11px] font-semibold uppercase tracking-widestx text-brand-600">Domain at a glance</p>
+          <p class="eyebrow text-brand-600">Domain at a glance</p>
           <dl class="mt-5 space-y-5">
             <div class="flex items-baseline justify-between gap-4 border-b border-brand-100 pb-4">
               <dt class="text-sm text-accent-500">Length</dt>
@@ -342,7 +358,7 @@ const posts = (await getCollection('insights', (entry: Insight): entry is Insigh
     <section id="faq" class="section-padding bg-white">
       <div class="container-narrow">
         <div class="mx-auto max-w-2xl text-center">
-          <p class="text-[11px] font-semibold uppercase tracking-widestx text-brand-600">FAQ</p>
+          <p class="eyebrow text-brand-600">FAQ</p>
           <h2 class="mt-3 font-display text-3xl font-semibold tracking-tight text-accent-900 sm:text-4xl">
             Questions buyers ask
           </h2>
@@ -387,7 +403,7 @@ const posts = (await getCollection('insights', (entry: Insight): entry is Insigh
         <section class="section-padding bg-brand-50">
           <div class="container-narrow">
             <div class="mx-auto max-w-2xl text-center">
-              <p class="text-[11px] font-semibold uppercase tracking-widestx text-brand-600">Insights</p>
+              <p class="eyebrow text-brand-600">Insights</p>
               <h2 class="mt-3 font-display text-3xl font-semibold tracking-tight text-accent-900 sm:text-4xl">
                 More on Albuquerque &amp; the name
               </h2>
@@ -395,7 +411,7 @@ const posts = (await getCollection('insights', (entry: Insight): entry is Insigh
             <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {posts.map((post) => (
                 <a href={`/insights/${post.slug}/`} class="card group flex flex-col transition hover:-translate-y-1">
-                  <p class="text-[11px] font-medium uppercase tracking-widestx text-brand-600">
+                  <p class="text-xs font-medium uppercase tracking-widestx text-brand-600">
                     {post.data.pubDate.toISOString().split('T')[0]}
                   </p>
                   <h3 class="mt-3 font-display text-xl font-semibold text-accent-900 group-hover:text-brand-700">

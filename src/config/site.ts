@@ -9,6 +9,7 @@ export const SITE = {
   priceCurrency: 'USD',
   priceValidUntil: '2027-12-31',
   datePublished: '2026-09-08',
+  dateModified: '2026-09-27',
   googleSiteVerification: 'Hviq3kxWPkbZyYpHgU0oOgKJrqdxTXiWyAjo9TZqzIw',
   ogImage:
     'https://imagedelivery.net/-sPAUAWeA405NiWJ0SNIQA/ff42759f-0014-4f32-6f0b-8d589f17c000/public',

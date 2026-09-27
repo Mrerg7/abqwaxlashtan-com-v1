@@ -26,11 +26,11 @@ const inquiryHref = ACQUISITION_MAILTO(
   <div class="container-narrow section-padding">
     <div class="grid gap-12 lg:grid-cols-2 lg:gap-16">
       <div>
-        <p class="text-[11px] font-medium uppercase tracking-widestx text-brand-400">Domain for sale</p>
+        <p class="eyebrow text-brand-400">Domain for sale</p>
         <h2 class="mt-3 font-display text-3xl font-semibold text-white sm:text-5xl">
           Acquire <span class="text-brand-300">{SITE.domain}</span>
         </h2>
-        <p class="mt-4 text-sm leading-relaxed text-accent-200 sm:text-base">
+        <p class="mt-4 text-base leading-relaxed text-accent-200 sm:text-lg">
           Albuquerque written into a single hostname — city code ABQ plus the three services a beauty studio
           sells: wax, lash, and tan. Built for a boutique studio, a multi-location operator, or a beauty
           educator who wants local intent in the URL.
@@ -39,7 +39,7 @@ const inquiryHref = ACQUISITION_MAILTO(
         <p class="mt-8 font-display text-5xl font-semibold tracking-tight text-brand-300 sm:text-6xl">
           {SITE.priceDisplay}
         </p>
-        <p class="mt-2 text-xs uppercase tracking-widestx text-brand-400">Asking price · USD</p>
+        <p class="mt-2 text-xs uppercase tracking-widestx text-brand-400">Asking price · USD · one-time</p>
 
         <ul class="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-sm text-accent-100/90">
           <li class="flex items-center gap-2">
@@ -88,16 +88,88 @@ const inquiryHref = ACQUISITION_MAILTO(
       <div class="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur sm:p-8">
         <h3 class="font-display text-2xl font-semibold text-white sm:text-3xl">Request terms</h3>
         <p class="mt-2 text-sm leading-relaxed text-accent-200/90">
-          Serious inquiries only. Your email client will open with the details pre-filled and addressed to the
-          seller. Protected via Escrow.com at close.
+          Serious inquiries only. Fill the form — it opens your email client with a pre-filled message to the
+          seller. No account required. Protected via Escrow.com at close.
         </p>
 
-        <a href={inquiryHref} class="btn-accent mt-6">
-          Email {SITE.email}
-        </a>
+        <form id="inquiry-form" class="mt-6 space-y-4" novalidate>
+          <div>
+            <label for="inquiry-name" class="mb-1.5 block text-xs font-medium uppercase tracking-widestx text-accent-300">
+              Your name
+            </label>
+            <input
+              id="inquiry-name"
+              name="name"
+              type="text"
+              autocomplete="name"
+              required
+              class="min-h-11 w-full rounded-xl border border-white/15 bg-white/10 px-4 text-base text-white placeholder:text-accent-400 focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-400/40"
+              placeholder="Full name"
+            />
+          </div>
+          <div>
+            <label for="inquiry-email" class="mb-1.5 block text-xs font-medium uppercase tracking-widestx text-accent-300">
+              Email
+            </label>
+            <input
+              id="inquiry-email"
+              name="email"
+              type="email"
+              autocomplete="email"
+              inputmode="email"
+              required
+              class="min-h-11 w-full rounded-xl border border-white/15 bg-white/10 px-4 text-base text-white placeholder:text-accent-400 focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-400/40"
+              placeholder="you@studio.com"
+            />
+          </div>
+          <div>
+            <label for="inquiry-offer" class="mb-1.5 block text-xs font-medium uppercase tracking-widestx text-accent-300">
+              Offer (USD)
+            </label>
+            <input
+              id="inquiry-offer"
+              name="offer"
+              type="text"
+              inputmode="decimal"
+              class="min-h-11 w-full rounded-xl border border-white/15 bg-white/10 px-4 text-base text-white placeholder:text-accent-400 focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-400/40"
+              placeholder={SITE.priceDisplay}
+            />
+          </div>
+          <div>
+            <label for="inquiry-message" class="mb-1.5 block text-xs font-medium uppercase tracking-widestx text-accent-300">
+              Intended use / message
+            </label>
+            <textarea
+              id="inquiry-message"
+              name="message"
+              rows="4"
+              class="w-full rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-base text-white placeholder:text-accent-400 focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-400/40"
+              placeholder="Boutique studio, multi-location, franchise, educator…"
+            ></textarea>
+          </div>
+
+          <button type="submit" class="btn-accent w-full">
+            Send inquiry — {SITE.priceDisplay}
+          </button>
+          <p id="inquiry-status" class="hidden text-center text-sm text-brand-300" role="status" aria-live="polite"></p>
+        </form>
+
+        <div class="mt-5 flex flex-col gap-3 sm:flex-row">
+          <a href={inquiryHref} class="btn-outline border-white/20 bg-transparent text-white hover:bg-white/10 hover:text-white sm:flex-1">
+            Open email app
+          </a>
+          <button
+            type="button"
+            id="copy-email-btn"
+            class="btn-outline border-white/20 bg-transparent text-white hover:bg-white/10 hover:text-white sm:flex-1"
+            data-email={SITE.email}
+          >
+            Copy {SITE.email}
+          </button>
+        </div>
 
         <p class="mt-4 text-center text-xs leading-relaxed text-accent-400">
-          Or write directly:
+          Or write directly to
           <a
             href={`mailto:${SITE.email}?subject=${encodeURIComponent(`Domain Inquiry: ${SITE.domain}`)}`}
             class="font-medium text-brand-300 underline decoration-brand-400/50 underline-offset-4 hover:text-brand-200"
@@ -121,3 +193,60 @@ const inquiryHref = ACQUISITION_MAILTO(
     </div>
   </div>
 </section>
+
+<script define:vars={{ email: SITE.email, domain: SITE.domain, priceDisplay: SITE.priceDisplay }}>
+  const form = document.getElementById('inquiry-form');
+  const status = document.getElementById('inquiry-status');
+  const copyBtn = document.getElementById('copy-email-btn');
+
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    if (!(form instanceof HTMLFormElement)) return;
+
+    const data = new FormData(form);
+    const name = String(data.get('name') || '').trim();
+    const fromEmail = String(data.get('email') || '').trim();
+    const offer = String(data.get('offer') || '').trim() || priceDisplay;
+    const message = String(data.get('message') || '').trim();
+
+    if (!name || !fromEmail) {
+      if (status) {
+        status.textContent = 'Please add your name and email so we can reply.';
+        status.classList.remove('hidden');
+      }
+      return;
+    }
+
+    const subject = `Domain Inquiry: ${domain} — ${offer}`;
+    const body = [
+      `Domain: ${domain} (asking ${priceDisplay})`,
+      `From: ${name} <${fromEmail}>`,
+      `Offer: ${offer}`,
+      '',
+      'Intended use / message:',
+      message || '(not provided)',
+      '',
+      'Timeline:',
+    ].join('\n');
+
+    window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+    if (status) {
+      status.textContent = 'Opening your email app… If nothing opens, tap Copy email below.';
+      status.classList.remove('hidden');
+    }
+  });
+
+  copyBtn?.addEventListener('click', async () => {
+    const value = copyBtn.getAttribute('data-email') || email;
+    try {
+      await navigator.clipboard.writeText(value);
+      copyBtn.textContent = 'Email copied';
+      setTimeout(() => {
+        copyBtn.textContent = `Copy ${value}`;
+      }, 2000);
+    } catch {
+      copyBtn.textContent = value;
+    }
+  });
+</script>
